@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 ROOT_DIR = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
-in_file = os.path.join(ROOT_DIR, 'data','031768_t1w_deface_stx_nii.gz')
+in_file = os.path.join(ROOT_DIR, 'data', '031768_t1w_deface_stx.nii.gz')
 
 
 skullstrip = Node(fsl.BET(in_file=in_file, mask=True), name="skullstrip")
@@ -15,3 +15,4 @@ wf = Workflow(name="smoothflow", base_dir=os.path.join('..', 'data'))
 
 wf.connect(skullstrip, "mask_file", mask, "mask_file")
 wf.connect([(smooth, mask, [("out_file", "in_file")])])
+wf.run()
