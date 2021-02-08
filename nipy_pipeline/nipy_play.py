@@ -23,8 +23,6 @@ wf = Workflow(name="smoothflow") # Workflows need names too
 # Now the more complicated method. Note this way you can define several connections at once,
 # and you can even define several connnections between two nodes in one smalller step
 wf.connect([(smooth, mask, [("out_file", "in_file")])])
-
-wf.write_graph("workflow_graph.dot")
 wf.run()
 
 
