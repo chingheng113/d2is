@@ -18,11 +18,11 @@ in_file = os.path.join(ROOT_DIR, 'data', '031768_t1w_deface_stx.nii.gz')
 # workflow
 skullstrip = Node(fsl.BET(in_file=in_file, mask=True), name="skullstrip")
 smooth = Node(fsl.IsotropicSmooth(in_file=in_file, fwhm=4), name="smooth")
-mask = Node(fsl.ApplyMask(), name="mask")
-wf = Workflow(name="smoothflow") # Workflows need names too
-# Now the more complicated method. Note this way you can define several connections at once,
-# and you can even define several connnections between two nodes in one smalller step
-wf.connect([(smooth, mask, [("out_file", "in_file")])])
+# mask = Node(fsl.ApplyMask(), name="mask")
+# wf = Workflow(name="smoothflow")
+# wf.connect([(smooth, mask, [("out_file", "in_file")])])
+wf = Workflow(name="smoothflow")
+wf.connect([(smooth, [("out_file", "in_file")])])
 wf.run()
 
 
