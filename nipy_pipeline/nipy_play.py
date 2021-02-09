@@ -24,6 +24,7 @@ mask = Node(fsl.ApplyMask(), name="mask")
 
 wf = Workflow(name="smoothflow", base_dir=os.path.join(ROOT_DIR, 'nipy_pipeline'))
 
+wf.connect(skullstrip, "mask_file", mask, "mask_file")
 wf.connect([(smooth, mask, [("out_file", "in_file")])])
 
 
