@@ -1,3 +1,2 @@
-from nipype.utils.filemanip import loadpkl
-res = loadpkl('crash-20210209-020905-root-mask-b204702c-85dd-4763-a608-d2b65b7ce29e.pklz')
-print(res)
+import os
+os.system('nipypecli crash crash-20210209-024800-root-mask-ab4c57bf-0d9b-4a56-bd43-d65fc44bfe22.pklz')
