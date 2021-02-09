@@ -22,7 +22,7 @@ smooth = Node(fsl.IsotropicSmooth(in_file=in_file, fwhm=4), name="smooth")
 
 mask = Node(fsl.ApplyMask(), name="mask")
 
-wf = Workflow(name="smoothflow")
+wf = Workflow(name="smoothflow", base_dir=os.path.join(ROOT_DIR, 'nipy_pipeline'))
 
 wf.connect([(smooth, mask, [("out_file", "in_file")])])
 
