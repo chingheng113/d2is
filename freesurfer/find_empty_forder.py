@@ -8,10 +8,8 @@ folder_list = glob.glob(os.path.join(root_path, '*'))
 count = 0
 for f_path in folder_list:
     img_name = f_path.split('\\')[-1].replace('_result', '')
-    content_folder = glob.glob(f_path + '\\*')
-    scripts = glob.glob(f_path+'\\scripts\\*')
-    if len(content_folder) != 0:
-        if not os.path.isfile(os.path.join(f_path, 'scripts', 'recon-all.done')):
-            print(img_name)
-            count = count+1
+    content_folder = glob.glob(f_path+'\\*')
+    if len(content_folder) == 0:
+        print(img_name)
+        count = count+1
 print('done', count)
