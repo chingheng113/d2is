@@ -1,0 +1,34 @@
+Bootstrap: yum
+OSVersion: 7
+MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearch/
+Include: yum
+
+%labels
+    Author Ching-Heng Lin
+    Version v0.0.1
+%post
+    # Core system capabilities required
+    yum update -y && yum install -y \
+        bc \
+        build-essential \
+        dc \
+        git \
+        libopenblas-dev \
+        nano \
+        nodejs-legacy \
+        npm \
+        perl-modules \
+        python \
+        tar \
+        tcsh \
+        unzip \
+        wget
+    # Python env
+    yum install -y python36
+    yum install -y python36-setuptools
+
+%help
+    I need somebody
+    (Help!) not just anybody
+    (Help!) you know I need someone
+    Help!
