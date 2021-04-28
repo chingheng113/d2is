@@ -1,0 +1,13 @@
+docker run repronim/neurodocker:latest generate singularity \
+--base=neurodebian:stretch-non-free \
+--pkg-manager=apt \
+--install convert3d ants fsl gcc g++ graphviz tree \
+            git-annex-standalone vim emacs-nox nano less ncdu \
+            tig git-annex-remote-rclone octave netbase \
+--add-to-entrypoint "source /etc/fsl/fsl.sh" \
+--afni version=latest method=binaries \
+--dcm2niix version=latest method=source \
+--fsl version=5.0.10 method=binaries \
+--matlabmcr version=2018a method=binaries \
+--mrtrix3 version=3.0_RC3 \
+--spm12 version=r7219 method=binaries
