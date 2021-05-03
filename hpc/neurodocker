@@ -1,6 +1,8 @@
 docker run repronim/neurodocker:latest generate singularity \
 --base=neurodebian:stretch-non-free \
 --pkg-manager=apt \
+--neurodebian os_codename=stretch server=usa-nh \
+--install connectome-workbench \
 --install convert3d ants fsl gcc g++ graphviz tree \
             git-annex-standalone vim emacs-nox nano less ncdu \
             tig git-annex-remote-rclone octave netbase \
@@ -14,4 +16,5 @@ docker run repronim/neurodocker:latest generate singularity \
 --miniconda create_env=neuro \
             conda_install='python=3.6 numpy pandas traits' \
             pip_install='nipype' \
---freesurfer version=6.0.0 method=binaries --copy license.txt /opt/freesurfer-6.0.0
+--freesurfer version=6.0.0 method=binaries --copy license.txt /opt/freesurfer-6.0.0 \
+
