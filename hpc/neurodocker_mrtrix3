@@ -1,0 +1,14 @@
+docker run repronim/neurodocker:latest generate singularity \
+--base=neurodebian:stretch-non-free \
+--pkg-manager=apt \
+--neurodebian os_codename=stretch server=usa-nh \
+--install convert3d ants fsl gcc g++ graphviz tree \
+            git-annex-standalone vim emacs-nox nano less ncdu \
+            tig git-annex-remote-rclone octave netbase \
+            libeigen3-dev libfftw3-dev libtiff5-dev zlib1g-dev \
+--add-to-entrypoint "source /etc/fsl/fsl.sh" \
+--matlabmcr version=2018a method=binaries \
+--spm12 version=r7771 method=binaries \
+--mrtrix3 version=3.0_RC3 \
+--freesurfer version=6.0.0 method=binaries --copy license.txt /opt/freesurfer-6.0.0 \
+
