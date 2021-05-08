@@ -2,19 +2,17 @@ docker run repronim/neurodocker:latest generate singularity \
 --base=neurodebian:stretch-non-free \
 --pkg-manager=apt \
 --neurodebian os_codename=stretch server=usa-nh \
+--miniconda create_env=neuro \
+            conda_install='python=3.6 numpy pandas traits' \
+            pip_install='nipype' \
 --install connectome-workbench \
 --install convert3d ants fsl gcc g++ graphviz tree \
             git-annex-standalone vim emacs-nox nano less ncdu \
             tig git-annex-remote-rclone octave netbase \
---add-to-entrypoint "source /etc/fsl/fsl.sh" \
+--spm12 version=r7771 method=binaries \
 --afni version=latest method=binaries \
 --dcm2niix version=latest method=source \
---fsl version=6.0.3 method=binaries \
 --matlabmcr version=2018a method=binaries \
 --mrtrix3 version=3.0_RC3 \
---spm12 version=r7771 method=binaries \
---miniconda create_env=neuro \
-            conda_install='python=3.6 numpy pandas traits' \
-            pip_install='nipype' \
 --freesurfer version=6.0.0 method=binaries --copy license.txt /opt/freesurfer-6.0.0 \
-
+--add-to-entrypoint "source /etc/fsl/fsl.sh"
