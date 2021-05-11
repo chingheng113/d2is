@@ -6,7 +6,7 @@ docker run repronim/neurodocker:latest generate singularity \
 --install convert3d ants fsl gcc g++ graphviz tree \
             git-annex-standalone vim emacs-nox nano less ncdu \
             tig git-annex-remote-rclone octave netbase \
-            libeigen3-dev libfftw3-dev libtiff5-dev zlib1g-dev \
+            libeigen3-dev libfftw3-dev libtiff5-dev zlib1g-dev wget parallel\
 --add-to-entrypoint "source /etc/fsl/fsl.sh" \
 --matlabmcr version=2018a method=binaries \
 --spm12 version=r7771 method=binaries \

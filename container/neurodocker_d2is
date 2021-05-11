@@ -8,7 +8,7 @@ docker run repronim/neurodocker:latest generate singularity \
 --install connectome-workbench \
 --install convert3d ants fsl gcc g++ graphviz tree \
             git-annex-standalone vim emacs-nox nano less ncdu \
-            tig git-annex-remote-rclone octave netbase \
+            tig git-annex-remote-rclone octave netbase wget parallel\
 --spm12 version=r7771 method=binaries \
 --afni version=latest method=binaries \
 --dcm2niix version=latest method=source \
