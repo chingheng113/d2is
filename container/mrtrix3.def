@@ -2,11 +2,7 @@
 # Latest release: Neurodocker version 0.7.0
 # Timestamp: 2021/05/05 09:28:42 UTC
 # 
-# Thank you for using Neurodocker. If you discover any issues
-# or ways to improve this software, please submit an issue or
-# pull request on our GitHub repository:
-# 
-#     https://github.com/ReproNim/neurodocker
+# Author: Ching-Heng, Lin @CGMH
 
 Bootstrap: docker
 From: neurodebian:stretch-non-free
@@ -278,3 +274,14 @@ license.txt /opt/freesurfer
 
 %runscript
 /neurodocker/startup.sh "$@"
+
+
+%labels
+Author Ching-Heng, Lin
+Version v0.0.1
+
+%help
+I need somebody
+(Help!) not just anybody
+(Help!) you know I need someone
+Help!
