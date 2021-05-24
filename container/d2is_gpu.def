@@ -4,6 +4,9 @@
 #
 # Author: Ching-Heng, Lin @CGMH
 
+# Release note
+# The first release
+
 Bootstrap: docker
 From: neurodebian:stretch-non-free
 
@@ -18,7 +21,17 @@ apt-get install -y -q --no-install-recommends \
     ca-certificates \
     curl \
     locales \
-    unzip
+    unzip \
+    wget \
+    libgl1-mesa-glx \
+    libgl1-mesa-dev \
+    freeglut3 \
+    libx11-dev \
+    libxtst6 \
+    libfontconfig \
+    libdbus-1-3 \
+    mesa-utils \
+    perl
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
@@ -45,6 +58,16 @@ curl -fsSL --retry 5 http://neuro.debian.net/lists/stretch.us-nh.full \
 curl -sSL https://dl.dropbox.com/s/zxs209o955q6vkg/neurodebian.gpg | apt-key add -
 (apt-key adv --refresh-keys --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9 || true)
 apt-get -qq update
+
+# install cuda 9.1
+wget https://developer.nvidia.com/compute/cuda/9.1/Prod/local_installers/cuda_9.1.85_387.26_linux
+echo $PWD
+sh cuda_9.1.85_387.26_linux --extract=$PWD
+sh cuda-linux.9.1.85-23083092.run -noprompt
+
+# install ibquadmanth for fsl eddy to work
+apt-get install -y libquadmath0
+
 
 apt-get update -qq
 apt-get install -y -q --no-install-recommends \
@@ -393,17 +416,20 @@ export AFNI_PLUGINPATH="/opt/afni-latest"
 export CONDA_DIR="/opt/miniconda-latest"
 export PATH="/opt/miniconda-latest/bin:$PATH"
 export PATH="/opt/dcm2niix-latest/bin:$PATH"
+export CUDA_HOME=/usr/local/cuda
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+export PATH=/usr/local/cuda/bin:$PATH
 
 %files
 /home/jim/Desktop/freesurfer-linux-centos7_x86_64-7.1.1.tar.gz /opt
-license.txt /opt
+/home/jim/Desktop/license.txt /opt
 
 %runscript
 /neurodocker/startup.sh "$@"
 
 %labels
 Author Ching-Heng, Lin
-Version v0.0.1
+Version v0.0.2
 
 %help
 I need somebody
