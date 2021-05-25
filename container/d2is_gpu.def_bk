@@ -102,7 +102,6 @@ apt-get update -qq
 apt-get install -y -q --no-install-recommends \
     convert3d \
     ants \
-    fsl \
     gcc \
     g++ \
     graphviz \
@@ -126,7 +125,16 @@ apt-get install -y -q --no-install-recommends \
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 
-sed -i '$isource /etc/fsl/fsl.sh' $ND_ENTRYPOINT
+echo "Downloading FSL ..."
+mkdir -p /opt/fsl-6.0.3
+curl -fsSL --retry 5 https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-6.0.3-centos6_64.tar.gz \
+| tar -xz -C /opt/fsl-6.0.3 --strip-components 1
+sed -i '$iecho Some packages in this Docker container are non-free' $ND_ENTRYPOINT
+sed -i '$iecho If you are considering commercial use of this container, please consult the relevant license:' $ND_ENTRYPOINT
+sed -i '$iecho https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Licence' $ND_ENTRYPOINT
+sed -i '$isource $FSLDIR/etc/fslconf/fsl.sh' $ND_ENTRYPOINT
+echo "Installing FSL conda environment ..."
+bash /opt/fsl-6.0.3/etc/fslconf/fslpython_install.sh -f /opt/fsl-6.0.3
 
 export TMPDIR="$(mktemp -d)"
 apt-get update -qq
@@ -157,6 +165,8 @@ apt-get install -y -q --no-install-recommends \
     libxt6
 apt-get clean
 rm -rf /var/lib/apt/lists/*
+
+
 echo "Downloading MATLAB Compiler Runtime ..."
 curl -sSL --retry 5 -o /tmp/toinstall.deb http://mirrors.kernel.org/debian/pool/main/libx/libxp/libxp6_1.0.2-2_amd64.deb
 dpkg -i /tmp/toinstall.deb
@@ -169,6 +179,8 @@ chmod +x "$TMPDIR/MCRInstaller.bin"
 "$TMPDIR/MCRInstaller.bin" -silent -P installLocation="/opt/matlabmcr-2010a"
 rm -rf "$TMPDIR"
 unset TMPDIR
+
+
 echo "Downloading standalone SPM ..."
 curl -fsSL --retry 5 -o /tmp/spm12.zip https://www.fil.ion.ucl.ac.uk/spm/download/restricted/utopia/previous/spm12_r7771_R2010a.zip
 unzip -q /tmp/spm12.zip -d /tmp
@@ -180,9 +192,13 @@ rm -rf /tmp/spm*
 sed -i '$iexport SPMMCRCMD=\"/opt/spm12-r7771/run_spm12.sh /opt/matlabmcr-2010a/v713 script\"' $ND_ENTRYPOINT
 
 echo "Downloading MRtrix3 ..."
-mkdir -p /opt/mrtrix3-3.0_RC3
-curl -fsSL --retry 5 https://dl.dropbox.com/s/2oh339ehcxcf8xf/mrtrix3-3.0_RC3-Linux-centos6.9-x86_64.tar.gz \
-| tar -xz -C /opt/mrtrix3-3.0_RC3 --strip-components 1
+git clone https://github.com/MRtrix3/mrtrix3.git /opt/mrtrix3 && \
+    cd /opt/mrtrix3 && \
+    git checkout tags/3.0.2 && \
+    python configure -nogui && \
+    python build -persistent -nopaginate && \
+    git describe --tags > /mrtrix3_version
+echo $'FailOnWarn: 1\n' > /etc/mrtrix.conf
 
 apt-get update -qq
 apt-get install -y -q --no-install-recommends \
@@ -214,6 +230,8 @@ if [ -n "$gsl2_path" ]; then
   ln -sfv "$gsl2_path" "$(dirname $gsl2_path)/libgsl.so.0";
 fi
 ldconfig
+
+
 echo "Downloading AFNI ..."
 mkdir -p /opt/afni-latest
 curl -fsSL --retry 5 https://afni.nimh.nih.gov/pub/dist/tgz/linux_openmp_64.tgz \
@@ -313,7 +331,6 @@ echo '{
 \n      [
 \n        "convert3d",
 \n        "ants",
-\n        "fsl",
 \n        "gcc",
 \n        "g++",
 \n        "graphviz",
@@ -357,7 +374,7 @@ echo '{
 \n    [
 \n      "mrtrix3",
 \n      {
-\n        "version": "3.0_RC3"
+\n        "version": "3.0.2"
 \n      }
 \n    ],
 \n    [
@@ -404,13 +421,26 @@ export LC_ALL="en_US.UTF-8"
 export ND_ENTRYPOINT="/neurodocker/startup.sh"
 export FREESURFER_HOME="/opt/freesurfer"
 export PATH="/opt/freesurfer/bin:$PATH"
+
+export FSLDIR="/opt/fsl-6.0.3"
+export PATH="/opt/fsl-6.0.3/bin:$PATH"
+export FSLOUTPUTTYPE="NIFTI_GZ"
+export FSLMULTIFILEQUIT="TRUE"
+export FSLTCLSH="/opt/fsl-6.0.3/bin/fsltclsh"
+export FSLWISH="/opt/fsl-6.0.3/bin/fslwish"
+export FSLLOCKDIR=""
+export FSLMACHINELIST=""
+export FSLREMOTECALL=""
+export FSLGECUDAQ="cuda.q"
+
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu:/opt/matlabmcr-2018a/v94/runtime/glnxa64:/opt/matlabmcr-2018a/v94/bin/glnxa64:/opt/matlabmcr-2018a/v94/sys/os/glnxa64:/opt/matlabmcr-2018a/v94/extern/bin/glnxa64"
 export MATLABCMD="/opt/matlabmcr-2018a/v94/toolbox/matlab"
 export FORCE_SPMMCR="1"
 export SPM_HTML_BROWSER="0"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu:/opt/matlabmcr-2010a/v713/runtime/glnxa64:/opt/matlabmcr-2010a/v713/bin/glnxa64:/opt/matlabmcr-2010a/v713/sys/os/glnxa64:/opt/matlabmcr-2010a/v713/extern/bin/glnxa64"
 export MATLABCMD="/opt/matlabmcr-2010a/v713/toolbox/matlab"
-export PATH="/opt/mrtrix3-3.0_RC3/bin:$PATH"
+export PATH="/opt/mrtrix3/bin:$PATH"
+export PYTHONPATH=/opt/mrtrix3/lib:$PYTHONPATH
 export PATH="/opt/afni-latest:$PATH"
 export AFNI_PLUGINPATH="/opt/afni-latest"
 export CONDA_DIR="/opt/miniconda-latest"
