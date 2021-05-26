@@ -1,4 +1,5 @@
-fslsplit MRI_6946_20210225_Siemens_DTI_1b0_1k_65_dir.nii.gz 
+#!/bin/bash
+fslsplit MRI_6946_20210225_Siemens_DTI_1b0_1k_65_dir.nii.gz
 cp vol0000.nii.gz AP.nii.gz
 mrconvert AP.nii.gz AP.mif
 #mv vol* 1kvol*

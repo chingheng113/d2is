@@ -1,3 +1,4 @@
+#!/bin/bash
 #cd dwifslpreproc-tmp-*
 cd dwifslpreproc-tmp-MJ346U
 totalSlices=`mrinfo dwi.mif | grep Dimensions | awk '{print $6 * $8}'`
