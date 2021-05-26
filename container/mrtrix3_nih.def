@@ -1,23 +1,48 @@
 BootStrap: library
 From: godloved/secure/ubuntu-bionic
 
-%post   
+%files
+/home/jim/Desktop/key_files/qt-opensource-linux-x64-5.12.10.run /
+/home/jim/Desktop/key_files/cuda_9.1.85_387.26_linux /opt
+/home/jim/Desktop/key_files/fsl-6.0.3-centos6_64.tar.gz /opt
+
+%post
    # install dependencies
    apt-get -y update
    apt-get install -y curl wget nano bzip2 less git
+   # Qt, CUDA
    apt-get install -y libgl1-mesa-glx libgl1-mesa-dev freeglut3 libx11-dev libxtst6 libfontconfig libdbus-1-3 mesa-utils libxrender-dev libxkbcommon-x11-0
-
+   # FSL
+   apt-get update -qq
+   apt-get install -y -q --no-install-recommends \
+    bc \
+    dc \
+    file \
+    libfontconfig1 \
+    libfreetype6 \
+    libgl1-mesa-dev \
+    libgl1-mesa-dri \
+    libglu1-mesa-dev \
+    libgomp1 \
+    libice6 \
+    libxcursor1 \
+    libxft2 \
+    libxinerama1 \
+    libxrandr2 \
+    libxrender1 \
+    libxt6 \
+    sudo \
+    libopenblas-base
 
    # install Qt
    cd / && mkdir Qt
-   wget https://download.qt.io/official_releases/qt/5.12/5.12.10/qt-opensource-linux-x64-5.12.10.run
+   # wget https://download.qt.io/official_releases/qt/5.12/5.12.10/qt-opensource-linux-x64-5.12.10.run
    git clone https://github.com/benlau/qtci
    export http_proxy=invalid
    qtci/bin/extract-qt-installer qt-opensource-linux-x64-5.12.10.run /Qt
    rm -rf qtci qt-opensource-linux-x64-5.12.10.run
 
    # install mrtrix
-   mkdir -p /opt
    cd /opt
    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
    bash Miniconda3-latest-Linux-x86_64.sh -f -b -p /opt/conda
@@ -29,24 +54,48 @@ From: godloved/secure/ubuntu-bionic
    conda install --yes -c mrtrix3 mrtrix3=3.0.2
 
    # install cuda 9.1
-   wget https://developer.nvidia.com/compute/cuda/9.1/Prod/local_installers/cuda_9.1.85_387.26_linux
+   cd /opt
+   # wget https://developer.nvidia.com/compute/cuda/9.1/Prod/local_installers/cuda_9.1.85_387.26_linux
    sh cuda_9.1.85_387.26_linux --extract=$PWD
    sh cuda-linux.9.1.85-23083092.run -noprompt
    rm cuda_9.1.85_387.26_linux
 
-   # install ibquadmanth for fsl eddy to work
-   apt-get install -y libquadmath0
+    # install ibquadmanth for fsl eddy to work
+    apt-get install -y libquadmath0
 
-   # create bind points for NIH HPC environment
-   mkdir -p /vf /gpfs /spin1 /data /scratch /fdb /lscratch
-   for i in $(seq 1 30); do ln -s /gpfs/gsfs${i} /gs${i}; done
+    # install FSL
+    cd /opt
+    # wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-6.0.3-centos6_64.tar.gz
+    tar -xzf fsl-6.0.3-centos6_64.tar.gz
+    mv /opt/fsl /opt/fsl-6.0.3
+    rm /opt/fsl-6.0.3-centos6_64.tar.gz
+    export FSLDIR="/opt/fsl-6.0.3"
+    ln -sf ${FSLDIR}/bin/eddy_cuda9.1 ${FSLDIR}/bin/eddy_cuda
 
-   # clean up
-   apt-get clean
-   conda clean --yes --all
+    # create bind points for NIH HPC environment
+    mkdir -p /vf /gpfs /spin1 /data /scratch /fdb /lscratch
+    for i in $(seq 1 30); do ln -s /gpfs/gsfs${i} /gs${i}; done
+
+    # clean up
+    apt-get clean
+    conda clean --yes --all
 
 %environment
-   export LC_ALL=C
-   export PATH=/opt/conda/envs/mrtrix/bin:/opt/conda/bin:${PATH}
-   #export LD_LIBRARY_PATH=/lib64:/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
-   export LD_LIBRARY_PATH=/lib64:${LD_LIBRARY_PATH}
+    export LC_ALL=C
+    # mrtrix
+    export PATH=/opt/conda/envs/mrtrix/bin:/opt/conda/bin:${PATH}
+    # cuda
+    export PATH=/usr/local/cuda-9.1/bin:${PATH}
+    export LD_LIBRARY_PATH=/lib64:/usr/local/cuda-9.1/lib64:${LD_LIBRARY_PATH}
+    # fsl
+    export FSLDIR="/opt/fsl-6.0.3"
+    export PATH="/opt/fsl-6.0.3/bin:$PATH"
+    export FSLOUTPUTTYPE="NIFTI_GZ"
+    export FSLMULTIFILEQUIT="TRUE"
+    export FSLTCLSH="/opt/fsl-6.0.3/bin/fsltclsh"
+    export FSLWISH="/opt/fsl-6.0.3/bin/fslwish"
+    export FSLLOCKDIR=""
+    export FSLMACHINELIST=""
+    export FSLREMOTECALL=""
+    export FSLGECUDAQ="cuda.q"
+
