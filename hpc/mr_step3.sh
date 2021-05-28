@@ -1,3 +1,4 @@
+#!/bin/bash
 tckedit tracks_10M.tck -number 200k smallerTracks_200k.tck
 #viewmrview MRI_6946_DTI_1b0_conc_130_dir_den_preproc_unbiased.mif  -tractography.load smallerTracks_200k.tck
 tcksift2 -act 5tt_coreg.mif -out_mu sift_mu.txt -out_coeffs sift_coeffs.txt -nthreads 8 tracks_10M.tck wmfod_norm.mif sift_1M.txt

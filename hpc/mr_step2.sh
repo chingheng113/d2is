@@ -1,6 +1,6 @@
 #!/bin/bash
-#cd dwifslpreproc-tmp-*
-cd dwifslpreproc-tmp-MJ346U
+cd dwifslpreproc-tmp-*
+#cd dwifslpreproc-tmp-MJ346U
 totalSlices=`mrinfo dwi.mif | grep Dimensions | awk '{print $6 * $8}'`
 totalOutliers=`awk '{ for(i=1;i<=NF;i++)sum+=$i } END { print sum }' dwi_post_eddy.eddy_outlier_map`
 echo "If the following number is greater than 10, you may have to discard this subject because of too much motion or corrupted slices"
