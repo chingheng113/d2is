@@ -19,15 +19,15 @@ from smb import smb_structs
 smb_structs.SUPPORT_SMB2 = False
 import numpy as np
 
-# branch = 'data_FS_new_HPC
-branch = 'data_FS_KAO'
-#branch = 'data_FS_old_HPC'
+# branch = 'data_FS_new_HPC'
+#branch = 'data_FS_KAO'
+branch = 'data_FS_new_HPC_re'
 
 conn = SMBConnection('anpo', 'Espesp043!', 'anpolinux', '10.30.9.32', use_ntlm_v2 = True)
 conn.connect('10.30.9.32', 139)
 sharefolder = 'd2is_images' 
 cgmhAI = conn.listPath('d2is_images','/'+branch)
-outlist = pd.read_csv('/home/anpo/Desktop/parsed_stats/exclude list.csv')
+outlist = pd.read_csv('exclude list.csv')
 
 
 txt_table = {}
@@ -66,7 +66,7 @@ for key, val in txt_table.items():
        offset = val[2]
        
     for i in cgmhAI:
-        if cnt>1 and i.filename != '.DS_Store' and i.filename != 'fsaverage':
+        if cnt>1 and i.filename != '.DS_Store' and i.filename != 'fsaverage' and i.filename != '.':
            # hello = 2
            # print(hello) 
            if i.filename not in outlist:      
@@ -169,7 +169,7 @@ for key, val in txt_table.items():
            print(cnt)
     print(AI_truncated)
     s0.index.name = 'patient ID' 
-    s0.to_csv('/home/anpo/Desktop/parsed_stats/'+key+'.csv')       
+    s0.to_csv(key+'.csv')
          
      
      
