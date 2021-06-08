@@ -9,7 +9,7 @@
 module purge
 module load singularity/v3.6.2
 export SINGULARITY_NV=1
-cd /home/chingheng/play_ground/org_data_m
+cd /home/chingheng/play_ground/data_m
 echo "Running on hosts: $SLURM_NODELIST"
 echo "Running on $SLURM_NNODES nodes."
 echo "Running $SLURM_NTASKS tasks."
