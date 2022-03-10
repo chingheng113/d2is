@@ -207,8 +207,8 @@ From: neurodebian:stretch-non-free
     conda install --yes -c mrtrix3 mrtrix3=3.0.2
 
     # install fmriprep =========================================================================
-    conda install -c anaconda pip
-    pip install fmriprep
+    # conda install -c anaconda pip
+    # pip install fmriprep
 
     # install ICA_AROMA =========================================================================
     cd /opt

@@ -1,1 +1,1 @@
-singularity build ./fmriprep.simg docker://nipreps/fmriprep
+singularity build ./fmriprep.sif docker://nipreps/fmriprep
