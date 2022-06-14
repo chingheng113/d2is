@@ -129,8 +129,4 @@ dmypy.json
 .pyre/
 
 
-profiles_settings.xml
-d2is.xml
-misc.xml
-modules.xml
-vcs.xml
+.idea/
